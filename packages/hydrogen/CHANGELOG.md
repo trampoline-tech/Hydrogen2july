@@ -1,5 +1,69 @@
 # @shopify/hydrogen
 
+## 2024.5.0
+
+### Minor Changes
+
+- Add `sellingPlanId` support to `BuyNowButton`. ([#2254](https://github.com/Shopify/hydrogen/pull/2254)) by [@dvisockas](https://github.com/dvisockas)
+
+### Patch Changes
+
+- `customerAccount` no longer commit session automatically in any situation. ([#2137](https://github.com/Shopify/hydrogen/pull/2137)) by [@michenly](https://github.com/michenly)
+
+- **Breaking change** ([#2113](https://github.com/Shopify/hydrogen/pull/2113)) by [@blittle](https://github.com/blittle)
+
+  Previously the `VariantSelector` component would filter out options that only had one value. This is undesireable for some apps. We've removed that filter, if you'd like to retain the existing functionality, simply filter the options prop before it is passed to the `VariantSelector` component:
+
+  ```diff
+   <VariantSelector
+     handle={product.handle}
+  +  options={product.options.filter((option) => option.values.length > 1)}
+  -  options={product.options}
+     variants={variants}>
+   </VariantSelector>
+  ```
+
+  Fixes [#1198](https://github.com/Shopify/hydrogen/discussions/1198)
+
+- Fix the types for optimistic cart ([#2132](https://github.com/Shopify/hydrogen/pull/2132)) by [@blittle](https://github.com/blittle)
+
+- Fix a small rounding issue when checking stale-while-revalidate timing. ([#2220](https://github.com/Shopify/hydrogen/pull/2220)) by [@frandiox](https://github.com/frandiox)
+
+- Fix customData from Analytics.Provider not being passed to page view events ([#2224](https://github.com/Shopify/hydrogen/pull/2224)) by [@wizardlyhel](https://github.com/wizardlyhel)
+
+- Auto cookie domain detection for customer privacy api and better error message for missing analytics fields ([#2256](https://github.com/Shopify/hydrogen/pull/2256)) by [@wizardlyhel](https://github.com/wizardlyhel)
+
+- Add a `useOptimisticProduct` hook for optimistically rendering product variant changes. This makes switching product variants instantaneous. Example usage: ([#2183](https://github.com/Shopify/hydrogen/pull/2183)) by [@blittle](https://github.com/blittle)
+
+  ```tsx
+  function Product() {
+    const {product: originalProduct, variants} = useLoaderData<typeof loader>();
+
+    // The product.selectedVariant optimistically changed during a page
+    // transition with one of the preloaded product variants
+    const product = useOptimisticProduct(originalProduct, variants);
+
+    return <ProductMain product={product} />;
+  }
+  ```
+
+  This also introduces a small breaking change to the `VariantSelector` component, which now immediately updates which variant is active. If you'd like to retain the current functionality, and have the `VariantSelector` wait for the page navigation to complete before updating, use the `waitForNavigation` prop:
+
+  ```tsx
+  <VariantSelector
+    handle={product.handle}
+    options={product.options}
+    waitForNavigation
+  >
+    ...
+  </VariantSelector>
+  ```
+
+- Return `null` instead of empty object from `cart.get()` when the cart id is invalid. ([#2258](https://github.com/Shopify/hydrogen/pull/2258)) by [@frandiox](https://github.com/frandiox)
+
+- Updated dependencies [[`54c2f7ad`](https://github.com/Shopify/hydrogen/commit/54c2f7ad3d0d52e6be10b2a54a1a4fd0cc107a35)]:
+  - @shopify/hydrogen-react@2024.5.0
+
 ## 2024.4.3
 
 ### Patch Changes
